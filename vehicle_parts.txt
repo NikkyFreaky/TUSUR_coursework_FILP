@@ -1,0 +1,95 @@
+VehiclePart {partName = "Audi воздушный фильтр", partPrice = 1500.0, partType = "Воздушный фильтр", partBrand = "Audi", partOriginal = True}
+VehiclePart {partName = "Audi топливный фильтр", partPrice = 3000.0, partType = "Топливный фильтр", partBrand = "Audi", partOriginal = True}
+VehiclePart {partName = "Audi топливный насос", partPrice = 20000.0, partType = "Топливный насос", partBrand = "Audi", partOriginal = True}
+VehiclePart {partName = "Audi свеча зажигания", partPrice = 1200.0, partType = "Свеча зажигания", partBrand = "Audi", partOriginal = True}
+VehiclePart {partName = "Audi генератор", partPrice = 40000.0, partType = "Генератор", partBrand = "Audi", partOriginal = True}
+
+VehiclePart {partName = "BMW воздушный фильтр", partPrice = 1700.0, partType = "Воздушный фильтр", partBrand = "BMW", partOriginal = True}
+VehiclePart {partName = "BMW топливный фильтр", partPrice = 3500.0, partType = "Топливный фильтр", partBrand = "BMW", partOriginal = True}
+VehiclePart {partName = "BMW топливный насос", partPrice = 22000.0, partType = "Топливный насос", partBrand = "BMW", partOriginal = True}
+VehiclePart {partName = "BMW свеча зажигания", partPrice = 1500.0, partType = "Свеча зажигания", partBrand = "BMW", partOriginal = True}
+VehiclePart {partName = "BMW генератор", partPrice = 45000.0, partType = "Генератор", partBrand = "BMW", partOriginal = True}
+
+VehiclePart {partName = "KIA воздушный фильтр", partPrice = 1200.0, partType = "Воздушный фильтр", partBrand = "KIA", partOriginal = True}
+VehiclePart {partName = "KIA топливный фильтр", partPrice = 2500.0, partType = "Топливный фильтр", partBrand = "KIA", partOriginal = True}
+VehiclePart {partName = "KIA топливный насос", partPrice = 18000.0, partType = "Топливный насос", partBrand = "KIA", partOriginal = True}
+VehiclePart {partName = "KIA свеча зажигания", partPrice = 900.0, partType = "Свеча зажигания", partBrand = "KIA", partOriginal = True}
+VehiclePart {partName = "KIA генератор", partPrice = 38000.0, partType = "Генератор", partBrand = "KIA", partOriginal = True}
+
+VehiclePart {partName = "Lada воздушный фильтр", partPrice = 800.0, partType = "Воздушный фильтр", partBrand = "Lada", partOriginal = True}
+VehiclePart {partName = "Lada топливный фильтр", partPrice = 1500.0, partType = "Топливный фильтр", partBrand = "Lada", partOriginal = True}
+VehiclePart {partName = "Lada топливный насос", partPrice = 12000.0, partType = "Топливный насос", partBrand = "Lada", partOriginal = True}
+VehiclePart {partName = "Lada свеча зажигания", partPrice = 500.0, partType = "Свеча зажигания", partBrand = "Lada", partOriginal = True}
+VehiclePart {partName = "Lada генератор", partPrice = 25000.0, partType = "Генератор", partBrand = "Lada", partOriginal = True}
+
+VehiclePart {partName = "Toyota воздушный фильтр", partPrice = 1400.0, partType = "Воздушный фильтр", partBrand = "Toyota", partOriginal = True}
+VehiclePart {partName = "Toyota топливный фильтр", partPrice = 2800.0, partType = "Топливный фильтр", partBrand = "Toyota", partOriginal = True}
+VehiclePart {partName = "Toyota топливный насос", partPrice = 19000.0, partType = "Топливный насос", partBrand = "Toyota", partOriginal = True}
+VehiclePart {partName = "Toyota свеча зажигания", partPrice = 1000.0, partType = "Свеча зажигания", partBrand = "Toyota", partOriginal = True}
+VehiclePart {partName = "Toyota генератор", partPrice = 42000.0, partType = "Генератор", partBrand = "Toyota", partOriginal = True}
+
+VehiclePart {partName = "Volkswagen воздушный фильтр", partPrice = 1300.0, partType = "Воздушный фильтр", partBrand = "Volkswagen", partOriginal = True}
+VehiclePart {partName = "Volkswagen топливный фильтр", partPrice = 2600.0, partType = "Топливный фильтр", partBrand = "Volkswagen", partOriginal = True}
+VehiclePart {partName = "Volkswagen топливный насос", partPrice = 18500.0, partType = "Топливный насос", partBrand = "Volkswagen", partOriginal = True}
+VehiclePart {partName = "Volkswagen свеча зажигания", partPrice = 1100.0, partType = "Свеча зажигания", partBrand = "Volkswagen", partOriginal = True}
+VehiclePart {partName = "Volkswagen генератор", partPrice = 43000.0, partType = "Генератор", partBrand = "Volkswagen", partOriginal = True}
+
+VehiclePart {partName = "Ford воздушный фильтр", partPrice = 1600.0, partType = "Воздушный фильтр", partBrand = "Ford", partOriginal = True}
+VehiclePart {partName = "Ford топливный фильтр", partPrice = 3000.0, partType = "Топливный фильтр", partBrand = "Ford", partOriginal = True}
+VehiclePart {partName = "Ford топливный насос", partPrice = 21000.0, partType = "Топливный насос", partBrand = "Ford", partOriginal = True}
+VehiclePart {partName = "Ford свеча зажигания", partPrice = 1300.0, partType = "Свеча зажигания", partBrand = "Ford", partOriginal = True}
+VehiclePart {partName = "Ford генератор", partPrice = 45000.0, partType = "Генератор", partBrand = "Ford", partOriginal = True}
+
+VehiclePart {partName = "Mercedes-Benz воздушный фильтр", partPrice = 2000.0, partType = "Воздушный фильтр", partBrand = "Mercedes-Benz", partOriginal = True}
+VehiclePart {partName = "Mercedes-Benz топливный фильтр", partPrice = 4000.0, partType = "Топливный фильтр", partBrand = "Mercedes-Benz", partOriginal = True}
+VehiclePart {partName = "Mercedes-Benz топливный насос", partPrice = 25000.0, partType = "Топливный насос", partBrand = "Mercedes-Benz", partOriginal = True}
+VehiclePart {partName = "Mercedes-Benz свеча зажигания", partPrice = 1800.0, partType = "Свеча зажигания", partBrand = "Mercedes-Benz", partOriginal = True}
+VehiclePart {partName = "Mercedes-Benz генератор", partPrice = 50000.0, partType = "Генератор", partBrand = "Mercedes-Benz", partOriginal = True}
+
+VehiclePart {partName = "Audi воздушный фильтр", partPrice = 1100.0, partType = "Воздушный фильтр", partBrand = "Audi", partOriginal = False}
+VehiclePart {partName = "Audi топливный фильтр", partPrice = 2500.0, partType = "Топливный фильтр", partBrand = "Audi", partOriginal = False}
+VehiclePart {partName = "Audi топливный насос", partPrice = 16000.0, partType = "Топливный насос", partBrand = "Audi", partOriginal = False}
+VehiclePart {partName = "Audi свеча зажигания", partPrice = 800.0, partType = "Свеча зажигания", partBrand = "Audi", partOriginal = False}
+VehiclePart {partName = "Audi генератор", partPrice = 35000.0, partType = "Генератор", partBrand = "Audi", partOriginal = False}
+
+VehiclePart {partName = "BMW воздушный фильтр", partPrice = 1300.0, partType = "Воздушный фильтр", partBrand = "BMW", partOriginal = False}
+VehiclePart {partName = "BMW топливный фильтр", partPrice = 2800.0, partType = "Топливный фильтр", partBrand = "BMW", partOriginal = False}
+VehiclePart {partName = "BMW топливный насос", partPrice = 18000.0, partType = "Топливный насос", partBrand = "BMW", partOriginal = False}
+VehiclePart {partName = "BMW свеча зажигания", partPrice = 1000.0, partType = "Свеча зажигания", partBrand = "BMW", partOriginal = False}
+VehiclePart {partName = "BMW генератор", partPrice = 39000.0, partType = "Генератор", partBrand = "BMW", partOriginal = False}
+
+VehiclePart {partName = "KIA воздушный фильтр", partPrice = 900.0, partType = "Воздушный фильтр", partBrand = "KIA", partOriginal = False}
+VehiclePart {partName = "KIA топливный фильтр", partPrice = 2000.0, partType = "Топливный фильтр", partBrand = "KIA", partOriginal = False}
+VehiclePart {partName = "KIA топливный насос", partPrice = 15000.0, partType = "Топливный насос", partBrand = "KIA", partOriginal = False}
+VehiclePart {partName = "KIA свеча зажигания", partPrice = 700.0, partType = "Свеча зажигания", partBrand = "KIA", partOriginal = False}
+VehiclePart {partName = "KIA генератор", partPrice = 32000.0, partType = "Генератор", partBrand = "KIA", partOriginal = False}
+
+VehiclePart {partName = "Lada воздушный фильтр", partPrice = 600.0, partType = "Воздушный фильтр", partBrand = "Lada", partOriginal = False}
+VehiclePart {partName = "Lada топливный фильтр", partPrice = 1000.0, partType = "Топливный фильтр", partBrand = "Lada", partOriginal = False}
+VehiclePart {partName = "Lada топливный насос", partPrice = 9000.0, partType = "Топливный насос", partBrand = "Lada", partOriginal = False}
+VehiclePart {partName = "Lada свеча зажигания", partPrice = 400.0, partType = "Свеча зажигания", partBrand = "Lada", partOriginal = False}
+VehiclePart {partName = "Lada генератор", partPrice = 20000.0, partType = "Генератор", partBrand = "Lada", partOriginal = False}
+
+VehiclePart {partName = "Toyota воздушный фильтр", partPrice = 1000.0, partType = "Воздушный фильтр", partBrand = "Toyota", partOriginal = False}
+VehiclePart {partName = "Toyota топливный фильтр", partPrice = 2200.0, partType = "Топливный фильтр", partBrand = "Toyota", partOriginal = False}
+VehiclePart {partName = "Toyota топливный насос", partPrice = 14000.0, partType = "Топливный насос", partBrand = "Toyota", partOriginal = False}
+VehiclePart {partName = "Toyota свеча зажигания", partPrice = 700.0, partType = "Свеча зажигания", partBrand = "Toyota", partOriginal = False}
+VehiclePart {partName = "Toyota генератор", partPrice = 36000.0, partType = "Генератор", partBrand = "Toyota", partOriginal = False}
+
+VehiclePart {partName = "Volkswagen воздушный фильтр", partPrice = 1100.0, partType = "Воздушный фильтр", partBrand = "Volkswagen", partOriginal = False}
+VehiclePart {partName = "Volkswagen топливный фильтр", partPrice = 2100.0, partType = "Топливный фильтр", partBrand = "Volkswagen", partOriginal = False}
+VehiclePart {partName = "Volkswagen топливный насос", partPrice = 15000.0, partType = "Топливный насос", partBrand = "Volkswagen", partOriginal = False}
+VehiclePart {partName = "Volkswagen свеча зажигания", partPrice = 800.0, partType = "Свеча зажигания", partBrand = "Volkswagen", partOriginal = False}
+VehiclePart {partName = "Volkswagen генератор", partPrice = 37000.0, partType = "Генератор", partBrand = "Volkswagen", partOriginal = False}
+
+VehiclePart {partName = "Ford воздушный фильтр", partPrice = 1200.0, partType = "Воздушный фильтр", partBrand = "Ford", partOriginal = False}
+VehiclePart {partName = "Ford топливный фильтр", partPrice = 2500.0, partType = "Топливный фильтр", partBrand = "Ford", partOriginal = False}
+VehiclePart {partName = "Ford топливный насос", partPrice = 17000.0, partType = "Топливный насос", partBrand = "Ford", partOriginal = False}
+VehiclePart {partName = "Ford свеча зажигания", partPrice = 900.0, partType = "Свеча зажигания", partBrand = "Ford", partOriginal = False}
+VehiclePart {partName = "Ford генератор", partPrice = 39000.0, partType = "Генератор", partBrand = "Ford", partOriginal = False}
+
+VehiclePart {partName = "Mercedes-Benz воздушный фильтр", partPrice = 1700.0, partType = "Воздушный фильтр", partBrand = "Mercedes-Benz", partOriginal = False}
+VehiclePart {partName = "Mercedes-Benz топливный фильтр", partPrice = 3200.0, partType = "Топливный фильтр", partBrand = "Mercedes-Benz", partOriginal = False}
+VehiclePart {partName = "Mercedes-Benz топливный насос", partPrice = 21000.0, partType = "Топливный насос", partBrand = "Mercedes-Benz", partOriginal = False}
+VehiclePart {partName = "Mercedes-Benz свеча зажигания", partPrice = 1200.0, partType = "Свеча зажигания", partBrand = "Mercedes-Benz", partOriginal = False}
+VehiclePart {partName = "Mercedes-Benz генератор", partPrice = 45000.0, partType = "Генератор", partBrand = "Mercedes-Benz", partOriginal = False}
