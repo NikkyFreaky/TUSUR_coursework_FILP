@@ -6,6 +6,7 @@ import Data.Maybe (mapMaybe)
 import Data.Set qualified as Set
 import System.Exit (exitSuccess)
 import System.IO
+import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 
 -- Определение типов данных
@@ -146,14 +147,38 @@ problems =
     Problem "Необычные звуки при работе двигателя" 5
   ]
 
+-- Функция для отображения меню и вывода "Выберите действие:"
+promptAction :: String -> IO String
+promptAction menu = do
+  putStrLn menu
+  putStr "Выберите действие: "
+  hFlush stdout
+  getLine
+
+-- Функция для выбора марки автомобиля
+selectBrand :: String -> [VehiclePart] -> Cart -> IO ()
+selectBrand typ vehicleParts cart = do
+  let uniqueBrands = getUniqueBrands vehicleParts
+  answer <- promptAction $ "\n" ++ (unlines $ zipWith (\i brand -> show i ++ ") " ++ brand) [1 ..] uniqueBrands ++ ["0) Выйти в главное меню"])
+  if answer == "0"
+    then main
+    else do
+      let brand = uniqueBrands !! (read answer - 1)
+      filterParts typ brand vehicleParts cart
+
+-- Функция для фильтрации и покупки
+filterParts :: String -> String -> [VehiclePart] -> Cart -> IO ()
+filterParts typ brand vehicleParts cart = do
+  minPrice <- getValidInput "\nВведите минимальную цену (0 для любой):" (>= 0)
+  maxPrice <- getValidInput "Введите максимальную цену (0 для любой):" (\x -> x >= minPrice)
+  isOriginal <- getValidInput "Вам нужна оригинальная запчасть? (1 - Да, 2 - Нет):" (\x -> x == 1 || x == 2)
+  let original = isOriginal == 1
+  buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) original vehicleParts cart
+
 -- Основное меню
 main :: IO ()
 main = do
-  putStrLn "Выберите опцию:"
-  putStrLn "1) Купить запчасти"
-  putStrLn "2) Помощь в подборе запчастей"
-  putStrLn "3) Выйти\n"
-  option <- getLine
+  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Выйти\n"
   case option of
     "1" -> buyVehicleParts emptyCart
     "2" -> do
@@ -167,27 +192,12 @@ buyVehicleParts :: Cart -> IO ()
 buyVehicleParts cart = do
   vehicleParts <- readVehicleParts "vehicle_parts.txt"
   let uniqueParts = getUniqueParts vehicleParts
-  putStrLn "\nВыберите тип запчасти:"
-  zipWithM_ (\i a -> putStrLn $ show (i :: Int) ++ ") " ++ a) [1 ..] uniqueParts
-  putStrLn "0) Выйти в главное меню"
-  answer <- getValidInput "" (\x -> x >= 0 && x <= length uniqueParts)
-  if answer == 0
+  answer <- promptAction $ "\n" ++ unlines (zipWith (\i part -> show i ++ ") " ++ part) [1 ..] uniqueParts ++ ["0) Выйти в главное меню"])
+  if answer == "0"
     then main
     else do
-      let typ = uniqueParts !! (answer - 1)
-      putStrLn "\nВыберите марку автомобиля:"
-      let uniqueBrands = getUniqueBrands vehicleParts
-      zipWithM_ (\i a -> putStrLn $ show (i :: Int) ++ ") " ++ a) [1 ..] uniqueBrands
-      answer <- getValidInput "" (\x -> x >= 0 && x <= length uniqueBrands)
-      if answer == 0
-        then main
-        else do
-          let brand = uniqueBrands !! (answer - 1)
-          minPrice <- getValidInput "\nВведите минимальную цену (0 для любой):" (>= 0)
-          maxPrice <- getValidInput "Введите максимальную цену (0 для любой):" (>= minPrice)
-          isOriginal <- getValidInput "\nВам нужна оригинальная запчасть? (1 - Да, 2 - Нет):" (\x -> x == 1 || x == 2)
-          let original = isOriginal == 1
-          buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) original vehicleParts cart
+      let typ = uniqueParts !! (read answer - 1)
+      selectBrand typ vehicleParts cart
 
 -- Покупка автозапчастей с фильтрами
 buyVehiclePartsWithFilter :: String -> String -> (Double, Double) -> Bool -> [VehiclePart] -> Cart -> IO ()
