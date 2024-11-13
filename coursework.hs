@@ -110,14 +110,31 @@ getUniqueParts = nub . map partType
 getUniqueBrands :: [VehiclePart] -> [String]
 getUniqueBrands = nub . map partBrand
 
--- Функция для фильтрации автозапчастей
+-- Функция для фильтрации запчастей с учётом совместимых брендов
 filterVehicleParts :: String -> String -> (Double, Double) -> Bool -> [VehiclePart] -> [VehiclePart]
-filterVehicleParts typ brand (minPrice, maxPrice) isOriginal =
-  filter ((== typ) . partType)
-    . filter ((== brand) . partBrand)
-    . filter ((>= minPrice) . partPrice)
-    . filter ((<= maxPrice) . partPrice)
-    . filter ((== isOriginal) . partOriginal)
+filterVehicleParts typ brand (minPrice, maxPrice) isOriginal vehicleParts =
+  let compatibleBrands = getCompatibleBrands typ brand
+   in filter ((== typ) . partType)
+        . filter (\p -> partBrand p `elem` compatibleBrands)
+        . filter (\p -> minPrice == 0 || partPrice p >= minPrice)
+        . filter (\p -> maxPrice == 0 || partPrice p <= maxPrice)
+        . filter (\p -> partOriginal p == isOriginal)
+        $ vehicleParts
+
+-- Функция для получения списка совместимых брендов
+getCompatibleBrands :: String -> String -> [String]
+getCompatibleBrands typ brand
+  | typ == "Воздушный фильтр" && brand `elem` ["Audi", "Volkswagen"] =
+      ["Audi", "Volkswagen"]
+  | typ == "Топливный фильтр" && brand `elem` ["BMW", "Mercedes-Benz"] =
+      ["BMW", "Mercedes-Benz"]
+  | typ == "Генератор" && brand `elem` ["BMW", "Mercedes-Benz"] =
+      ["BMW", "Mercedes-Benz"]
+  | typ == "Свеча зажигания" && brand `elem` ["Audi", "Volkswagen", "Ford", "BMW", "Mercedes-Benz"] =
+      ["Audi", "Volkswagen", "Ford", "BMW", "Mercedes-Benz"]
+  | typ == "Свеча зажигания" && brand `elem` ["KIA", "Toyota", "Lada"] =
+      ["KIA", "Toyota", "Lada"]
+  | otherwise = [brand]
 
 -- Список проблем для диагностики
 problems :: [Problem]
@@ -175,16 +192,13 @@ buyVehicleParts cart = do
 -- Покупка автозапчастей с фильтрами
 buyVehiclePartsWithFilter :: String -> String -> (Double, Double) -> Bool -> [VehiclePart] -> Cart -> IO ()
 buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) isOriginal vehicleParts cart = do
-  let filteredByType = filter ((== typ) . partType) vehicleParts
-  let filteredByBrand = filter ((== brand) . partBrand) filteredByType
-  let filteredByPrice = filter (\p -> (minPrice == 0 || partPrice p >= minPrice) && (maxPrice == 0 || partPrice p <= maxPrice)) filteredByBrand
-  let filtered = filter ((== isOriginal) . partOriginal) filteredByPrice
+  let filtered = filterVehicleParts typ brand (minPrice, maxPrice) isOriginal vehicleParts
   if null filtered
     then putStrLn "К сожалению, по вашему запросу не было найдено запчастей." >> buyVehiclePartsCart cart
     else do
       putStrLn "\nДоступные запчасти:"
       zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 ..] filtered
-      putStrLn "Введите номера запчастей для добавления в корзину (через пробел) или нажмите Enter для продолжения:"
+      putStrLn "\nВведите номера запчастей для добавления в корзину (через пробел) или нажмите Enter для продолжения:"
       input <- getLine
       buyVehiclePartsCart $ processInput cart (words input) filtered
 
@@ -202,7 +216,7 @@ buyVehiclePartsCart cart@(Cart items total _) = do
   putStrLn "\nКорзина:"
   zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 .. length items] items
   putStrLn $ "Сумма покупки: " ++ show total
-  choice <- getValidInput "Выберите действие (1 - Завершить покупку, 2 - Продолжить покупки, 3 - Удалить из корзины, 0 - Главное меню):" (\x -> x >= 0 && x <= 3)
+  choice <- getValidInput "\nВыберите действие (1 - Завершить покупку, 2 - Продолжить покупки, 3 - Удалить из корзины, 0 - Главное меню):" (\x -> x >= 0 && x <= 3)
   case choice of
     1 -> do
       putStrLn "\nПокупка совершена!"
