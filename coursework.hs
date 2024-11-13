@@ -6,7 +6,6 @@ import Data.Maybe (mapMaybe)
 import Data.Set qualified as Set
 import System.Exit (exitSuccess)
 import System.IO
-import System.IO (hFlush, stdout)
 import Text.Read (readMaybe)
 
 -- Определение типов данных
@@ -166,11 +165,11 @@ selectBrand typ vehicleParts cart = do
       let brand = uniqueBrands !! (read answer - 1)
       filterParts typ brand vehicleParts cart
 
--- Функция для фильтрации и покупки
+-- Функция для фильтрации и покупки в меню
 filterParts :: String -> String -> [VehiclePart] -> Cart -> IO ()
 filterParts typ brand vehicleParts cart = do
   minPrice <- getValidInput "\nВведите минимальную цену (0 для любой):" (>= 0)
-  maxPrice <- getValidInput "Введите максимальную цену (0 для любой):" (\x -> x >= minPrice)
+  maxPrice <- getValidInput "Введите максимальную цену (0 для любой):" (>= minPrice)
   isOriginal <- getValidInput "Вам нужна оригинальная запчасть? (1 - Да, 2 - Нет):" (\x -> x == 1 || x == 2)
   let original = isOriginal == 1
   buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) original vehicleParts cart
@@ -204,7 +203,7 @@ buyVehiclePartsWithFilter :: String -> String -> (Double, Double) -> Bool -> [Ve
 buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) isOriginal vehicleParts cart = do
   let filtered = filterVehicleParts typ brand (minPrice, maxPrice) isOriginal vehicleParts
   if null filtered
-    then putStrLn "К сожалению, по вашему запросу не было найдено запчастей." >> buyVehiclePartsCart cart
+    then putStrLn "\nК сожалению, по вашему запросу не было найдено запчастей." >> buyVehiclePartsCart cart
     else do
       putStrLn "\nДоступные запчасти:"
       zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 ..] filtered
