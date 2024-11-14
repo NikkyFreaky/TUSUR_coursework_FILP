@@ -158,7 +158,7 @@ promptAction menu = do
 selectBrand :: String -> [VehiclePart] -> Cart -> IO ()
 selectBrand typ vehicleParts cart = do
   let uniqueBrands = getUniqueBrands vehicleParts
-  answer <- promptAction $ "\n" ++ (unlines $ zipWith (\i brand -> show i ++ ") " ++ brand) [1 ..] uniqueBrands ++ ["0) Выйти в главное меню"])
+  answer <- promptAction $ "\n" ++ unlines (zipWith (\i brand -> show i ++ ") " ++ brand) [1 ..] uniqueBrands ++ ["0) Выйти в главное меню"])
   if answer == "0"
     then main
     else do
@@ -174,17 +174,34 @@ filterParts typ brand vehicleParts cart = do
   let original = isOriginal == 1
   buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) original vehicleParts cart
 
+-- Функция просмотра корзины
+viewCart :: Cart -> IO ()
+viewCart cart@(Cart items total _) = do
+  putStrLn "\nСодержимое корзины:"
+  if null items
+    then putStrLn "Корзина пуста."
+    else do
+      zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 ..] items
+      putStrLn $ "\nОбщая сумма: " ++ show total
+  putStrLn "\nНажмите Enter, чтобы вернуться в главное меню."
+  _ <- getLine
+  mainWithCart cart
+
 -- Основное меню
 main :: IO ()
-main = do
-  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Выйти\n"
+main = mainWithCart emptyCart
+
+mainWithCart :: Cart -> IO ()
+mainWithCart cart = do
+  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Просмотреть корзину\n4) Выйти\n"
   case option of
-    "1" -> buyVehicleParts emptyCart
+    "1" -> buyVehicleParts cart
     "2" -> do
       questions <- readQuestions "questions.txt"
       helpSelectVehicleParts questions
-    "3" -> exitSuccess
-    _ -> putStrLn "Неверный выбор\n" >> main
+    "3" -> viewCart cart
+    "4" -> exitSuccess
+    _ -> putStrLn "Неверный выбор\n" >> mainWithCart cart
 
 -- Покупка автозапчастей
 buyVehicleParts :: Cart -> IO ()
@@ -193,7 +210,7 @@ buyVehicleParts cart = do
   let uniqueParts = getUniqueParts vehicleParts
   answer <- promptAction $ "\n" ++ unlines (zipWith (\i part -> show i ++ ") " ++ part) [1 ..] uniqueParts ++ ["0) Выйти в главное меню"])
   if answer == "0"
-    then main
+    then mainWithCart cart
     else do
       let typ = uniqueParts !! (read answer - 1)
       selectBrand typ vehicleParts cart
@@ -223,21 +240,30 @@ processInput cart (x : xs) parts =
 buyVehiclePartsCart :: Cart -> IO ()
 buyVehiclePartsCart cart@(Cart items total _) = do
   putStrLn "\nКорзина:"
-  zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 .. length items] items
-  putStrLn $ "Сумма покупки: " ++ show total
-  choice <- getValidInput "\nВыберите действие (1 - Завершить покупку, 2 - Продолжить покупки, 3 - Удалить из корзины, 0 - Главное меню):" (\x -> x >= 0 && x <= 3)
+  if null items
+    then putStrLn "Корзина пуста."
+    else do
+      zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 .. length items] items
+      putStrLn $ "\nСумма покупки: " ++ show total
+  putStrLn "\nЧто вы хотите сделать?\n1) Завершить покупку\n2) Продолжить покупки\n3) Удалить из корзины\n0) Выйти в главное меню"
+  putStr "\nВыберите действие: "
+  hFlush stdout
+  choice <- getLine
   case choice of
-    1 -> do
+    "1" -> do
       putStrLn "\nПокупка совершена!"
       putStrLn "\nНажмите Enter для выхода"
       _ <- getLine
       exitSuccess
-    2 -> buyVehicleParts cart
-    3 -> do
-      index <- getValidInput "Введите номер запчасти для удаления:" (\x -> x > 0 && x <= length items)
-      buyVehiclePartsCart $ removeFromCart cart index
-    0 -> main
-    _ -> buyVehiclePartsCart cart
+    "2" -> buyVehicleParts cart
+    "3" -> do
+      if null items
+        then putStrLn "Корзина пуста. Удаление невозможно." >> buyVehiclePartsCart cart
+        else do
+          index <- getValidInput "\nВведите номер запчасти для удаления:" (\x -> x > 0 && x <= length items)
+          buyVehiclePartsCart $ removeFromCart cart index
+    "0" -> mainWithCart cart
+    _ -> putStrLn "Неверный выбор. Попробуйте снова." >> buyVehiclePartsCart cart
 
 -- Диагностика по вопросам
 helpSelectVehicleParts :: [Question] -> IO ()
