@@ -193,14 +193,14 @@ main = mainWithCart emptyCart "Выберите действие: "
 
 mainWithCart :: Cart -> String -> IO ()
 mainWithCart cart promptText = do
-  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Просмотреть корзину\n4) Выйти\n" promptText
+  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Просмотреть корзину\n0) Выйти\n" promptText
   case option of
     "1" -> buyVehicleParts cart
     "2" -> do
       questions <- readQuestions "questions.txt"
       helpSelectVehicleParts questions cart
     "3" -> viewCart cart
-    "4" -> exitSuccess
+    "0" -> exitSuccess
     _ -> putStrLn "Неверный выбор\n" >> mainWithCart cart promptText
 
 -- Покупка автозапчастей
