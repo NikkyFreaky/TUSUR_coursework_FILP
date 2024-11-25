@@ -63,7 +63,8 @@ removeFromCart (Cart items total set) index
 -- Универсальная функция для ввода с проверкой
 getValidInput :: (Read a) => String -> (a -> Bool) -> IO a
 getValidInput prompt check = do
-  putStrLn prompt
+  putStr prompt
+  hFlush stdout
   input <- getLine
   case readMaybe input of
     Just value | check value -> return value
@@ -139,18 +140,17 @@ getCompatibleBrands typ brand
 -- Список проблем для диагностики
 problems :: [Problem]
 problems =
-  [ Problem "Нестандартная работа двигателя" 1,
-    Problem "Автомобиль теряет мощность" 2,
-    Problem "Автомобиль плохо заводится" 3,
-    Problem "Повышенный расход топлива" 4,
-    Problem "Необычные звуки при работе двигателя" 5
+  [ Problem "Проблемы с запуском двигателя" 1,
+    Problem "Автомобиль теряет мощность" 6,
+    Problem "Автомобиль плохо заводится" 9,
+    Problem "Повышенный расход топлива" 12
   ]
 
--- Функция для отображения меню и вывода "Выберите действие:"
-promptAction :: String -> IO String
-promptAction menu = do
+-- Функция для отображения меню и вывода с настраиваемым приглашением
+promptAction :: String -> String -> IO String
+promptAction menu promptText = do
   putStrLn menu
-  putStr "Выберите действие: "
+  putStr promptText
   hFlush stdout
   getLine
 
@@ -158,9 +158,9 @@ promptAction menu = do
 selectBrand :: String -> [VehiclePart] -> Cart -> IO ()
 selectBrand typ vehicleParts cart = do
   let uniqueBrands = getUniqueBrands vehicleParts
-  answer <- promptAction $ "\n" ++ unlines (zipWith (\i brand -> show i ++ ") " ++ brand) [1 ..] uniqueBrands ++ ["0) Выйти в главное меню"])
+  answer <- promptAction ("\n" ++ unlines (zipWith (\i brand -> show i ++ ") " ++ brand) [1 ..] uniqueBrands ++ ["0) Выйти в главное меню"])) "Выберите действие: "
   if answer == "0"
-    then main
+    then mainWithCart cart "Выберите действие: "
     else do
       let brand = uniqueBrands !! (read answer - 1)
       filterParts typ brand vehicleParts cart
@@ -168,9 +168,9 @@ selectBrand typ vehicleParts cart = do
 -- Функция для фильтрации и покупки в меню
 filterParts :: String -> String -> [VehiclePart] -> Cart -> IO ()
 filterParts typ brand vehicleParts cart = do
-  minPrice <- getValidInput "\nВведите минимальную цену (0 для любой):" (>= 0)
-  maxPrice <- getValidInput "Введите максимальную цену (0 для любой):" (>= minPrice)
-  isOriginal <- getValidInput "Вам нужна оригинальная запчасть? (1 - Да, 2 - Нет):" (\x -> x == 1 || x == 2)
+  minPrice <- getValidInput "\nВведите минимальную цену (0 для любой): " (>= 0)
+  maxPrice <- getValidInput "Введите максимальную цену (0 для любой): " (>= minPrice)
+  isOriginal <- getValidInput "Вам нужна оригинальная запчасть? (1 - Да, 2 - Нет): " (\x -> x == 1 || x == 2)
   let original = isOriginal == 1
   buyVehiclePartsWithFilter typ brand (minPrice, maxPrice) original vehicleParts cart
 
@@ -185,32 +185,32 @@ viewCart cart@(Cart items total _) = do
       putStrLn $ "\nОбщая сумма: " ++ show total
   putStrLn "\nНажмите Enter, чтобы вернуться в главное меню."
   _ <- getLine
-  mainWithCart cart
+  mainWithCart cart "Выберите действие: "
 
 -- Основное меню
 main :: IO ()
-main = mainWithCart emptyCart
+main = mainWithCart emptyCart "Выберите действие: "
 
-mainWithCart :: Cart -> IO ()
-mainWithCart cart = do
-  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Просмотреть корзину\n4) Выйти\n"
+mainWithCart :: Cart -> String -> IO ()
+mainWithCart cart promptText = do
+  option <- promptAction "\n1) Купить запчасти\n2) Помощь в подборе запчастей\n3) Просмотреть корзину\n4) Выйти\n" promptText
   case option of
     "1" -> buyVehicleParts cart
     "2" -> do
       questions <- readQuestions "questions.txt"
-      helpSelectVehicleParts questions
+      helpSelectVehicleParts questions cart
     "3" -> viewCart cart
     "4" -> exitSuccess
-    _ -> putStrLn "Неверный выбор\n" >> mainWithCart cart
+    _ -> putStrLn "Неверный выбор\n" >> mainWithCart cart promptText
 
 -- Покупка автозапчастей
 buyVehicleParts :: Cart -> IO ()
 buyVehicleParts cart = do
   vehicleParts <- readVehicleParts "vehicle_parts.txt"
   let uniqueParts = getUniqueParts vehicleParts
-  answer <- promptAction $ "\n" ++ unlines (zipWith (\i part -> show i ++ ") " ++ part) [1 ..] uniqueParts ++ ["0) Выйти в главное меню"])
+  answer <- promptAction ("\n" ++ unlines (zipWith (\i part -> show i ++ ") " ++ part) [1 ..] uniqueParts ++ ["0) Выйти в главное меню"])) "Выберите действие: "
   if answer == "0"
-    then mainWithCart cart
+    then mainWithCart cart "Выберите действие: "
     else do
       let typ = uniqueParts !! (read answer - 1)
       selectBrand typ vehicleParts cart
@@ -246,9 +246,7 @@ buyVehiclePartsCart cart@(Cart items total _) = do
       zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ partName a ++ " | " ++ show (partPrice a) ++ " | " ++ partType a ++ " | " ++ partBrand a ++ if partOriginal a then " Оригинальная" else " Не оригинальная") [1 .. length items] items
       putStrLn $ "\nСумма покупки: " ++ show total
   putStrLn "\nЧто вы хотите сделать?\n1) Завершить покупку\n2) Продолжить покупки\n3) Удалить из корзины\n0) Выйти в главное меню"
-  putStr "\nВыберите действие: "
-  hFlush stdout
-  choice <- getLine
+  choice <- promptAction "" "\nВыберите действие: "
   case choice of
     "1" -> do
       putStrLn "\nПокупка совершена!"
@@ -262,33 +260,44 @@ buyVehiclePartsCart cart@(Cart items total _) = do
         else do
           index <- getValidInput "\nВведите номер запчасти для удаления:" (\x -> x > 0 && x <= length items)
           buyVehiclePartsCart $ removeFromCart cart index
-    "0" -> mainWithCart cart
+    "0" -> mainWithCart cart "Выберите действие: "
     _ -> putStrLn "Неверный выбор. Попробуйте снова." >> buyVehiclePartsCart cart
 
 -- Диагностика по вопросам
-helpSelectVehicleParts :: [Question] -> IO ()
-helpSelectVehicleParts questions = do
-  putStrLn "\nВыберите проблему:"
-  zipWithM_ (\i p -> putStrLn $ show i ++ ") " ++ problemDescription p) [1 ..] problems
-  choice <- getValidInput "0) Выйти в главное меню\n" (\x -> x >= 0 && x <= length problems)
-  if choice == 0
-    then main
-    else do
-      let selectedProblem = problems !! (choice - 1)
-      helpSelectVehiclePartsRec (fromList [(questionId q, q) | q <- questions]) (startingQuestionId selectedProblem)
+helpSelectVehicleParts :: [Question] -> Cart -> IO ()
+helpSelectVehicleParts questions cart = do
+  let menu =
+        "\nВыберите проблему:\n"
+          ++ unlines (zipWith (\i p -> show i ++ ") " ++ problemDescription p) [1 ..] problems)
+          ++ "0) Выйти в главное меню\n"
+  choiceStr <- promptAction menu "Выберите действие: "
+  putStrLn ""
+  case readMaybe choiceStr of
+    Just choice | choice >= 0 && choice <= length problems -> do
+      if choice == 0
+        then mainWithCart cart "Выберите действие: "
+        else do
+          let selectedProblem = problems !! (choice - 1)
+          helpSelectVehiclePartsRec (fromList [(questionId q, q) | q <- questions]) (startingQuestionId selectedProblem) cart
+    _ -> do
+      putStrLn "Неверный выбор. Попробуйте снова."
+      helpSelectVehicleParts questions cart
 
 -- Рекурсивная диагностика по вопросам
-helpSelectVehiclePartsRec :: Map Int Question -> Int -> IO ()
-helpSelectVehiclePartsRec questionsMap currentId = do
+helpSelectVehiclePartsRec :: Map Int Question -> Int -> Cart -> IO ()
+helpSelectVehiclePartsRec questionsMap currentId cart = do
   case questionsMap !? currentId of
-    Nothing -> putStrLn "Неизвестная проблема" >> helpSelectVehicleParts (elems questionsMap)
+    Nothing -> putStrLn "Неизвестная проблема" >> helpSelectVehicleParts (elems questionsMap) cart
     Just q -> do
       putStrLn (question q)
       if null (answers q)
-        then putStrLn "\nЗавершение диагностики." >> main
+        then do
+          putStrLn "\nЗавершение диагностики."
+          mainWithCart cart "Выберите дальнейшее действие: "
         else do
           zipWithM_ (\i a -> putStrLn $ show i ++ ") " ++ answer a) [1 ..] (answers q)
-          answerIndex <- getValidInput "\nВыберите ответ:" (\x -> x >= 0 && x <= length (answers q))
+          answerIndex <- getValidInput "\nВыберите ответ: " (\x -> x >= 0 && x <= length (answers q))
+          putStrLn ""
           if answerIndex == 0
-            then main
-            else helpSelectVehiclePartsRec questionsMap (qid $ answers q !! (answerIndex - 1))
+            then mainWithCart cart "Выберите действие: "
+            else helpSelectVehiclePartsRec questionsMap (qid $ answers q !! (answerIndex - 1)) cart
