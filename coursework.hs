@@ -79,7 +79,7 @@ readVehicleParts filePath = do
   hSetEncoding handle utf8
   contents <- hGetContents handle
   let parts = parseVehicleParts contents
-  length parts `seq` hClose handle -- Гарантируем чтение перед закрытием
+  length parts `seq` hClose handle
   return parts
 
 parseVehicleParts :: String -> [VehiclePart]
@@ -95,7 +95,7 @@ readQuestions filePath = do
   hSetEncoding handle utf8
   contents <- hGetContents handle
   let questions = parseQuestions contents
-  length questions `seq` hClose handle -- Гарантируем чтение перед закрытием
+  length questions `seq` hClose handle
   return questions
 
 parseQuestions :: String -> [Question]
